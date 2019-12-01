@@ -17,19 +17,25 @@ public class Move {
 	public static final double WEIGHT_INVALID = Double.NEGATIVE_INFINITY;
 
 	/** The start index of the move. */
-	private byte startIndex;
+	private  /*@ spec_public @*/  byte startIndex;
+	//@ public invariant 0 <= startIndex;
 	
 	/** The end index of the move. */
-	private byte endIndex;
+	private /*@ spec_public @*/   byte endIndex;
+	//@ public invariant 0 <= endIndex;
 	
 	/** The weight associated with the move. */
-	private double weight;
+	private  /*@ spec_public @*/  double weight;
+	//@ public invariant 0.0 <= weight;
 	
+	/*@ requires 0 <= startIndex && 0 <= endIndex;
+	@*/
 	public Move(int startIndex, int endIndex) {
 		setStartIndex(startIndex);
 		setEndIndex(endIndex);
 	}
 	
+	//Constructor
 	public Move(Point start, Point end) {
 		setStartIndex(Board.toIndex(start));
 		setEndIndex(Board.toIndex(end));

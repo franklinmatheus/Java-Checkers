@@ -21,15 +21,16 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.Timer;
-
 import logic.MoveGenerator;
 import model.Board;
 import model.Game;
 import model.HumanPlayer;
 import model.NetworkPlayer;
 import model.Player;
+
 import network.Command;
 import network.Session;
+
 
 /**
  * The {@code CheckerBoard} class is a graphical user interface component that

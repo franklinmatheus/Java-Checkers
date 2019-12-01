@@ -5,16 +5,14 @@
  */
 
 package ui;
-
 import java.awt.BorderLayout;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import model.Player;
 import network.CheckersNetworkHandler;
 import network.ConnectionListener;
 import network.Session;
+
 
 /**
  * The {@code CheckersWindow} class is responsible for managing a window. This

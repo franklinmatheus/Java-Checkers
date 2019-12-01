@@ -5,6 +5,7 @@
 
 package logic;
 
+
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class MoveGenerator {
 	 * represents a move available.
 	 * @see {@link #getMoves(Board, int)}
 	 */
-	public static List<Point> getMoves(Board board, Point start) {
+	public /*@ pure */ static List<Point> getMoves(Board board, Point start) {
 		return getMoves(board, Board.toIndex(start));
 	}
 	
@@ -39,7 +40,15 @@ public class MoveGenerator {
 	 * represents a move available.
 	 * @see {@link #getMoves(Board, Point)}
 	 */
-	public static List<Point> getMoves(Board board, int startIndex) {
+//	/*@
+//	  @ requires board == null || !Board.isValidIndex(startIndex);
+//	  @ assignable \nothing;
+//	  @ ensures (\forall int i; i >= 0 && i <= \result.size(); \result.get(i) instanceof Point);
+//	  @ also
+//	  @ requires board != null || Board.isValidIndex(startIndex);
+//	  @
+//	  @*/
+	public /*@ pure */ static List<Point> getMoves(Board board, int startIndex) {
 		
 		// Trivial cases
 		List<Point> endPoints = new ArrayList<>();
@@ -72,7 +81,7 @@ public class MoveGenerator {
 	 * represents a skip available.
 	 * @see {@link #getSkips(Board, int)}
 	 */
-	public static List<Point> getSkips(Board board, Point start) {
+	public /*@ pure */ static List<Point> getSkips(Board board, Point start) {
 		return getSkips(board, Board.toIndex(start));
 	}
 	
@@ -85,6 +94,7 @@ public class MoveGenerator {
 	 * represents a skip available.
 	 * @see {@link #getSkips(Board, Point)}
 	 */
+	// IGUAL A `getMoves`
 	public static List<Point> getSkips(Board board, int startIndex) {
 		
 		// Trivial cases
@@ -119,6 +129,21 @@ public class MoveGenerator {
 	 * @param endIndex		the end index of the skip.
 	 * @return true if and only if the skip can be performed.
 	 */
+	/*@
+	  @ requires board == null || board.get(endIndex) != Board.EMPTY ||
+				 board.get(startIndex) == Board.INVALID || board.get(startIndex) == Board.EMPTY ||
+				 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.INVALID || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.EMPTY ||
+				 (board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_CHECKER || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_KING)
+				^ (board.get(startIndex) == Board.WHITE_CHECKER || board.get(startIndex) == Board.WHITE_KING);
+	  @ ensures \result == false;
+	  @ also
+	  @ requires board != null || board.get(endIndex) == Board.EMPTY ||
+				 board.get(startIndex) != Board.INVALID || board.get(startIndex) != Board.EMPTY ||
+				 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.EMPTY ||
+				 (board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING)
+				^ (board.get(startIndex) != Board.WHITE_CHECKER || board.get(startIndex) != Board.WHITE_KING);
+	  @ ensures \result == true;
+	  @*/
 	public static boolean isValidSkip(Board board,
 			int startIndex, int endIndex) {
 		
@@ -154,6 +179,15 @@ public class MoveGenerator {
 	 * @param id		the ID at the center point.
 	 * @param delta		the amount to add/subtract.
 	 */
+	/*@
+	  @ requires (id == Board.BLACK_KING || id == Board.WHITE_KING) || id == Board.BLACK_CHECKER;
+	  @ assignable \nothing;
+	  @ ensures points.size() != \old(points.size());
+	  @ also
+	  @ requires (id == Board.BLACK_KING || id == Board.WHITE_KING) || id == Board.WHITE_CHECKER;
+	  @ assignable \nothing;
+	  @ ensures points.size() != \old(points.size());
+	  @*/
 	public static void addPoints(List<Point> points, Point p, int id, int delta) {
 		
 		// Add points moving down

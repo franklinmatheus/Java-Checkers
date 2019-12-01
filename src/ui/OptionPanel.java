@@ -25,6 +25,7 @@ import network.Command;
 import network.ConnectionListener;
 import network.Session;
 
+
 /**
  * The {@code OptionPanel} class provides a user interface component to control
  * options for the game of checkers being played in the window.
