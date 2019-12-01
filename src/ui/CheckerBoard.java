@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.Timer;
-
 import logic.MoveGenerator;
 import model.Board;
 import model.Game;
