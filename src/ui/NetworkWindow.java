@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+
 /**
  * The {@code NetworkWindow} class is used as a way to get input from the user
  * in making network connections between checkers clients. It specifies the

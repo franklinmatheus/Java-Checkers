@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-
 import model.NetworkPlayer;
 import ui.CheckerBoard;
 import ui.CheckersWindow;

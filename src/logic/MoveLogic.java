@@ -27,7 +27,14 @@ public class MoveLogic {
 	 * @return true if the move is legal according to the rules of checkers.
 	 * @see {@link #isValidMove(Board, boolean, int, int, int)}
 	 */
-	public /*@ pure */ static boolean isValidMove(Game game,
+	/*@
+	  @ requires startIndex >= 0 && endIndex >= 0 &&  game != null;
+	  @ ensures \result == true;
+	  @ also
+	  @ requires game == null;
+	  @ ensures \result == false;
+	  @*/
+	public static boolean isValidMove(Game game,
 			int startIndex, int endIndex) {
 		return game == null? false : isValidMove(game.getBoard(),
 				game.isP1Turn(), startIndex, endIndex, game.getSkipIndex());
@@ -44,6 +51,17 @@ public class MoveLogic {
 	 * @return true if the move is legal according to the rules of checkers.
 	 * @see {@link #isValidMove(Game, int, int)}
 	 */
+	/*@
+	  @ requires board == null || !Board.isValidIndex(startIndex) ||
+				!Board.isValidIndex(endIndex) || startIndex == endIndex || 
+				(Board.isValidIndex(skipIndex) && skipIndex != startIndex);
+	  @ ensures \result == false;
+	  @ also
+	  @ requires board != null || Board.isValidIndex(startIndex) ||
+				Board.isValidIndex(endIndex) || startIndex != endIndex || 
+				(!Board.isValidIndex(skipIndex) && skipIndex == startIndex);
+	  @ ensures \result == true;
+	  @*/
 	public static boolean isValidMove(Board board, boolean isP1Turn,
 			int startIndex, int endIndex, int skipIndex) {
 		
@@ -78,6 +96,25 @@ public class MoveLogic {
 	 * @param endIndex		the end index of the move.
 	 * @return true if and only if all IDs are valid.
 	 */
+	/*@
+	  @ requires board.get(endIndex) != Board.EMPTY ||
+				(isP1Turn && board.get(startIndex) != Board.BLACK_CHECKER && board.get(startIndex) != Board.BLACK_KING)
+				|| (!isP1Turn && board.get(startIndex) != Board.WHITE_CHECKER
+				&& board.get(startIndex) != Board.WHITE_KING) ||  board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID && ((!isP1Turn &&
+				board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER && board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING) ||
+				(isP1Turn && board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_CHECKER &&
+				board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_KING));
+	  @ ensures \result == false;
+	  @ also
+	  @ requires board.get(endIndex) == Board.EMPTY ||
+				(!isP1Turn && board.get(startIndex) == Board.BLACK_CHECKER && board.get(startIndex) == Board.BLACK_KING)
+				|| (isP1Turn && board.get(startIndex) == Board.WHITE_CHECKER
+				&& board.get(startIndex) == Board.WHITE_KING) || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.INVALID && ((isP1Turn &&
+				board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_CHECKER && board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_KING) ||
+				(!isP1Turn && board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.WHITE_CHECKER &&
+				board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.WHITE_KING));
+	  @ ensures \result == true;
+	  @*/
 	private static boolean validateIDs(Board board, boolean isP1Turn,
 			int startIndex, int endIndex) {
 		
@@ -119,6 +156,22 @@ public class MoveLogic {
 	 * @param endIndex		the end index of the move.
 	 * @return true if and only if the move distance is valid.
 	 */
+	//ERRO AO COLOCAR .x e .y, e corrigir `for` dentro do `if`
+//	/*@
+//	  @ requires (Math.abs(Board.toPoint(endIndex) - Board.toPoint(startIndex)) != Math.abs(Board.toPoint(endIndex) - Board.toPoint(startIndex)) || 
+//	  Math.abs(Board.toPoint(endIndex) - Board.toPoint(startIndex)) > 2 || 
+//	  Board.toPoint(endIndex) - Board.toPoint(startIndex) == 0) ||
+//	  (board.get(startIndex) == Board.WHITE_CHECKER && Board.toPoint(endIndex) - Board.toPoint(startIndex) > 0) ||
+//				(board.get(startIndex) == Board.BLACK_CHECKER && Board.toPoint(endIndex) - Board.toPoint(startIndex) < 0);
+//	  @ ensures \result == false;
+//	  @ also
+//	  @ requires (Math.abs(Board.toPoint(endIndex) - Board.toPoint(startIndex)) == Math.abs(Board.toPoint(endIndex) - Board.toPoint(startIndex)) || 
+//	  Math.abs(Board.toPoint(endIndex) - Board.toPoint(startIndex)) < 2 || 
+//	  Board.toPoint(endIndex) - Board.toPoint(startIndex) != 0) ||
+//	  (board.get(startIndex) != Board.WHITE_CHECKER && Board.toPoint(endIndex) - Board.toPoint(startIndex) < 0) ||
+//				(board.get(startIndex) != Board.BLACK_CHECKER && Board.toPoint(endIndex) - Board.toPoint(startIndex) > 0);
+//	  @ ensures \result == true;
+//	  @*/
 	private static boolean validateDistance(Board board, boolean isP1Turn,
 			int startIndex, int endIndex) {
 		
@@ -174,6 +227,16 @@ public class MoveLogic {
 	 * @param checker	the point where the test checker is located at.
 	 * @return true if and only if the checker at the point is safe.
 	 */
+	//Problema com `for`
+//	/*@
+//	  @ requires board == null || checker == null || Board.toIndex(checker) < 0 || 
+//	  board.get(Board.toIndex(checker)) == Board.EMPTY ;
+//	  @ ensures \result == true;
+//	  @ also
+//	  @ requires board != null || checker != null || Board.toIndex(checker) > 0 ||
+//	  board.get(Board.toIndex(checker)) != Board.EMPTY;
+//	  @ ensures \result == false;
+//	  @*/
 	public static boolean isSafe(Board board, Point checker) {
 		
 		// Trivial cases

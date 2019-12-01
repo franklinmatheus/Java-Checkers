@@ -5,6 +5,7 @@
 
 package network;
 
+
 /**
  * The {@code Session} class represents a session between this client and a
  * remote checkers client. It contains the important connection information
