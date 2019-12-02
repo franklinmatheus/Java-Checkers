@@ -65,16 +65,7 @@ public class ComputerPlayer extends Player {
 	  @ assignable \nothing;
 	  @ also
 	  @ requires game != null && !game.isGameOver();
-	  @ ensures (\exists int i; 0 <= i && i < getMoves(\old(game).copy()).size();
-	  @				(\exists int j; 0 <= j && j < 32;
-	  @					(
-	  @						\old(game).copy().getBoard().get(j) 
-	  @						== 
-	  @						game.copy().getBoard().get(getMoves(\old(game).copy()).get(i).getEndIndex())
-	  @					) 
-	  @					&& (game.copy().getBoard().get(j) == 0)
-	  @				)
-	  @			);
+	  @ assignable game;
 	  @*/
 	public void updateGame(Game game) {
 		
@@ -141,17 +132,6 @@ public class ComputerPlayer extends Player {
 	  @ also
 	  @ requires game.getSkipIndex() < 0;
 	  @ requires this.getAllSkips(game, this.getCheckers(game)).isEmpty();
-	  @ ensures (\forall int i; 0 <= i && i < this.getCheckers(game).size();
-	  @				(\forall int j; 0 <= j && j < MoveGenerator.getMoves(game.getBoard(), this.getCheckerIndex(game, i)).size();
-	  @					(this.getCheckerIndex(game, i) 
-	  @						== ((Move)\result.get(i)).getStartIndex()
-	  @					)
-	  @					&&
-	  @					(Board.toIndex(MoveGenerator.getMoves(game.getBoard(), i).get(j)) 
-	  @						== ((Move)\result.get(i)).getEndIndex()
-	  @					)
-	  @				)
-	  @			);
 	  @*/
 	private /*@ spec_public pure */ List<Move> getMoves(Game game) {
 		
@@ -215,6 +195,9 @@ public class ComputerPlayer extends Player {
 		return checkers;
 	}
 	
+	/*@
+	  @ ensures \result.size() == checkers.size() + kings.size();
+	  @*/
 	public /*@ pure */ static List<Point> getMergedLists(List<Point> checkers, List<Point> kings) {
 		List<Point> all = new ArrayList<>();
 		all.addAll(checkers);
@@ -248,7 +231,31 @@ public class ComputerPlayer extends Player {
 	 * @param isP1Turn		the original player turn flag.
 	 * @return the maximum number of skips available from the given point.
 	 */
-	private int getSkipDepth(Game game, int startIndex, boolean isP1Turn) {
+	/*@
+	  @ requires isP1Turn != game.isP1Turn();
+	  @ ensures \result == 0;
+	  @ also
+	  @ requires isP1Turn == game.isP1Turn();
+	  @ requires !MoveGenerator.getSkips(game.getBoard(), startIndex).isEmpty();
+	  @ ensures (\exists int i; 0 <= i && i < MoveGenerator.getSkips(game.getBoard(), startIndex).size();
+	  @				(\forall int j; 0 <= j && j < MoveGenerator.getSkips(game.getBoard(), startIndex).size();
+	  @					(MoveGenerator.getSkips(game.getBoard(), startIndex).get(i).getX() !=
+	  @					MoveGenerator.getSkips(game.getBoard(), startIndex).get(j).getX())
+	  @					||
+	  @					(MoveGenerator.getSkips(game.getBoard(), startIndex).get(i).getY() !=
+	  @					MoveGenerator.getSkips(game.getBoard(), startIndex).get(j).getY())
+	  @					&&
+	  @					this.getSkipDepth(game, Board.toIndex(MoveGenerator.getSkips(game.getBoard(), startIndex).get(i)), isP1Turn) >
+	  @					this.getSkipDepth(game, Board.toIndex(MoveGenerator.getSkips(game.getBoard(), startIndex).get(j)), isP1Turn)
+	  @					&&
+	  @					(this.getSkipDepth(game, Board.toIndex(MoveGenerator.getSkips(game.getBoard(), startIndex).get(i)), isP1Turn) + 1) == \result
+	  @				)
+	  @			);
+	  @ also
+	  @ requires isP1Turn == game.isP1Turn();
+	  @ requires MoveGenerator.getSkips(game.getBoard(), startIndex).isEmpty();
+	  @*/
+	private /*@ spec_public pure */ int getSkipDepth(Game game, int startIndex, boolean isP1Turn) {
 		
 		// Trivial case
 		if (isP1Turn != game.isP1Turn()) {
@@ -266,7 +273,7 @@ public class ComputerPlayer extends Player {
 				depth = testDepth;
 			}
 		}
-		
+
 		return depth + (skips.isEmpty()? 0 : 1);
 	}
 	
@@ -344,7 +351,6 @@ public class ComputerPlayer extends Player {
 	 */
 	/*@
 	  @ requires isBlack;
-	  @ 
 	  @ also
 	  @ requires !isBlack;
 	  @*/

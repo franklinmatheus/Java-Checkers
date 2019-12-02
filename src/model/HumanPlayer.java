@@ -13,6 +13,10 @@ package model;
 public class HumanPlayer extends Player {
 
 	@Override
+	/*@
+	  @ also
+	  @ ensures \result == true;
+	  @*/
 	public boolean isHuman() {
 		return true;
 	}

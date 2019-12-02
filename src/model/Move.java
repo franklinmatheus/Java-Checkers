@@ -18,18 +18,18 @@ public class Move {
 
 	/** The start index of the move. */
 	private  /*@ spec_public @*/  byte startIndex;
-	//@ public invariant 0 <= startIndex;
+	//@ public invariant 0 <= startIndex || startIndex == -1;
 	
 	/** The end index of the move. */
 	private /*@ spec_public @*/   byte endIndex;
-	//@ public invariant 0 <= endIndex;
+	//@ public invariant 0 <= endIndex || endIndex == -1;
 	
 	/** The weight associated with the move. */
 	private  /*@ spec_public @*/  double weight;
-	//@ public invariant 0.0 <= weight;
 	
-	/*@ requires 0 <= startIndex && 0 <= endIndex;
-	@*/
+	/*@ 
+	  @ requires 0 <= startIndex && 0 <= endIndex;
+	  @*/
 	public Move(int startIndex, int endIndex) {
 		setStartIndex(startIndex);
 		setEndIndex(endIndex);

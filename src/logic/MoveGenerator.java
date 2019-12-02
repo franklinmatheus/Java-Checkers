@@ -95,7 +95,7 @@ public class MoveGenerator {
 	 * @see {@link #getSkips(Board, Point)}
 	 */
 	// IGUAL A `getMoves`
-	public static List<Point> getSkips(Board board, int startIndex) {
+	public /*@ pure */ static List<Point> getSkips(Board board, int startIndex) {
 		
 		// Trivial cases
 		List<Point> endPoints = new ArrayList<>();
@@ -130,18 +130,30 @@ public class MoveGenerator {
 	 * @return true if and only if the skip can be performed.
 	 */
 	/*@
-	  @ requires board == null || board.get(endIndex) != Board.EMPTY ||
-				 board.get(startIndex) == Board.INVALID || board.get(startIndex) == Board.EMPTY ||
-				 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.INVALID || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.EMPTY ||
-				 (board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_CHECKER || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_KING)
-				^ (board.get(startIndex) == Board.WHITE_CHECKER || board.get(startIndex) == Board.WHITE_KING);
+	  @ requires board == null ||
+	  @			 board.get(endIndex) != Board.EMPTY ||
+	  @			 board.get(startIndex) == Board.INVALID || 
+	  @			 board.get(startIndex) == Board.EMPTY ||
+	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.INVALID || 
+	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.EMPTY ||
+	  @			 (
+	  @				(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_CHECKER || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_KING)
+	  @			 	^ 
+	  @			 	(board.get(startIndex) == Board.WHITE_CHECKER || board.get(startIndex) == Board.WHITE_KING)
+	  @			 );
 	  @ ensures \result == false;
 	  @ also
-	  @ requires board != null || board.get(endIndex) == Board.EMPTY ||
-				 board.get(startIndex) != Board.INVALID || board.get(startIndex) != Board.EMPTY ||
-				 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.EMPTY ||
-				 (board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING)
-				^ (board.get(startIndex) != Board.WHITE_CHECKER || board.get(startIndex) != Board.WHITE_KING);
+	  @ requires board != null &&
+	  @			 board.get(endIndex) == Board.EMPTY &&
+	  @			 board.get(startIndex) != Board.INVALID &&
+	  @			 board.get(startIndex) != Board.EMPTY &&
+	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID &&
+	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.EMPTY &&
+	  @			 (
+	  @				(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING)
+	  @			 	^ 
+	  @				(board.get(startIndex) != Board.WHITE_CHECKER || board.get(startIndex) != Board.WHITE_KING)
+	  @			 );
 	  @ ensures \result == true;
 	  @*/
 	public static boolean isValidSkip(Board board,

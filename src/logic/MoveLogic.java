@@ -52,14 +52,22 @@ public class MoveLogic {
 	 * @see {@link #isValidMove(Game, int, int)}
 	 */
 	/*@
-	  @ requires board == null || !Board.isValidIndex(startIndex) ||
-				!Board.isValidIndex(endIndex) || startIndex == endIndex || 
-				(Board.isValidIndex(skipIndex) && skipIndex != startIndex);
+	  @ requires board == null || 
+	  @			 !Board.isValidIndex(startIndex) ||
+	  @			 !Board.isValidIndex(endIndex) || 
+	  @			 startIndex == endIndex || 
+	  @			 (Board.isValidIndex(skipIndex) && skipIndex != startIndex) ||
+	  @			 !validateIDs(board, isP1Turn, startIndex, endIndex) ||
+	  @			 !validateDistance(board, isP1Turn, startIndex, endIndex);
 	  @ ensures \result == false;
 	  @ also
-	  @ requires board != null || Board.isValidIndex(startIndex) ||
-				Board.isValidIndex(endIndex) || startIndex != endIndex || 
-				(!Board.isValidIndex(skipIndex) && skipIndex == startIndex);
+	  @ requires board != null &&
+	  @			 Board.isValidIndex(startIndex) &&
+	  @			 Board.isValidIndex(endIndex) && 
+	  @			 startIndex != endIndex && 
+	  @			 (!Board.isValidIndex(skipIndex) && skipIndex == startIndex) &&
+	  @			 validateIDs(board, isP1Turn, startIndex, endIndex) &&
+	  @			 validateDistance(board, isP1Turn, startIndex, endIndex);
 	  @ ensures \result == true;
 	  @*/
 	public static boolean isValidMove(Board board, boolean isP1Turn,
@@ -98,24 +106,44 @@ public class MoveLogic {
 	 */
 	/*@
 	  @ requires board.get(endIndex) != Board.EMPTY ||
-				(isP1Turn && board.get(startIndex) != Board.BLACK_CHECKER && board.get(startIndex) != Board.BLACK_KING)
-				|| (!isP1Turn && board.get(startIndex) != Board.WHITE_CHECKER
-				&& board.get(startIndex) != Board.WHITE_KING) ||  board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID && ((!isP1Turn &&
-				board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER && board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING) ||
-				(isP1Turn && board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_CHECKER &&
-				board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_KING));
+	  @			(isP1Turn && board.get(startIndex) != Board.BLACK_CHECKER && board.get(startIndex) != Board.BLACK_KING) ||
+	  @			(!isP1Turn && board.get(startIndex) != Board.WHITE_CHECKER && board.get(startIndex) != Board.WHITE_KING) || 
+	  @			board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID && 
+	  @				(
+	  @					(
+	  @						!isP1Turn && 
+	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER && 
+	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING
+	  @					) 
+	  @					||
+	  @					(
+	  @						isP1Turn && 
+	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_CHECKER && 
+	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_KING
+	  @					)
+	  @				);
 	  @ ensures \result == false;
 	  @ also
-	  @ requires board.get(endIndex) == Board.EMPTY ||
-				(!isP1Turn && board.get(startIndex) == Board.BLACK_CHECKER && board.get(startIndex) == Board.BLACK_KING)
-				|| (isP1Turn && board.get(startIndex) == Board.WHITE_CHECKER
-				&& board.get(startIndex) == Board.WHITE_KING) || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.INVALID && ((isP1Turn &&
-				board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_CHECKER && board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_KING) ||
-				(!isP1Turn && board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.WHITE_CHECKER &&
-				board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.WHITE_KING));
+	  @ requires board.get(endIndex) == Board.EMPTY &&
+	  @			(!isP1Turn && board.get(startIndex) == Board.BLACK_CHECKER && board.get(startIndex) == Board.BLACK_KING) &&
+	  @			(isP1Turn && board.get(startIndex) == Board.WHITE_CHECKER && board.get(startIndex) == Board.WHITE_KING) && 
+	  @			board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.INVALID && 
+	  @			(
+	  @				(
+	  @					isP1Turn &&
+	  @					(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_CHECKER || 
+	  @					board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_KING)
+	  @				) 
+	  @				||
+	  @				(
+	  @					!isP1Turn && 
+	  @					(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.WHITE_CHECKER ||
+	  @					board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.WHITE_KING)
+	  @				)
+	  @			);
 	  @ ensures \result == true;
 	  @*/
-	private static boolean validateIDs(Board board, boolean isP1Turn,
+	private /*@ spec_public pure */ static boolean validateIDs(Board board, boolean isP1Turn,
 			int startIndex, int endIndex) {
 		
 		// Check if end is clear
@@ -172,7 +200,7 @@ public class MoveLogic {
 //				(board.get(startIndex) != Board.BLACK_CHECKER && Board.toPoint(endIndex) - Board.toPoint(startIndex) > 0);
 //	  @ ensures \result == true;
 //	  @*/
-	private static boolean validateDistance(Board board, boolean isP1Turn,
+	private /*@ spec_public pure */ static boolean validateDistance(Board board, boolean isP1Turn,
 			int startIndex, int endIndex) {
 		
 		// Check that it was a diagonal move

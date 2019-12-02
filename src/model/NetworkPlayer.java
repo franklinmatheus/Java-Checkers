@@ -13,6 +13,10 @@ package model;
 public class NetworkPlayer extends Player {
 
 	@Override
+	/*@
+	  @ also
+	  @ ensures \result == false;
+	  @*/
 	public boolean isHuman() {
 		return false;
 	}
