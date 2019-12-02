@@ -28,8 +28,8 @@ public class MoveLogic {
 	 * @see {@link #isValidMove(Board, boolean, int, int, int)}
 	 */
 	/*@
-	  @ requires startIndex >= 0 && endIndex >= 0 &&  game != null;
-	  @ ensures \result == true;
+	  @ requires game != null;
+	  @ ensures \result == isValidMove(game.getBoard(), game.isP1Turn(), startIndex, endIndex, game.getSkipIndex());
 	  @ also
 	  @ requires game == null;
 	  @ ensures \result == false;
@@ -65,12 +65,12 @@ public class MoveLogic {
 	  @			 Board.isValidIndex(startIndex) &&
 	  @			 Board.isValidIndex(endIndex) && 
 	  @			 startIndex != endIndex && 
-	  @			 (!Board.isValidIndex(skipIndex) && skipIndex == startIndex) &&
+	  @			 (!Board.isValidIndex(skipIndex) || skipIndex == startIndex) &&
 	  @			 validateIDs(board, isP1Turn, startIndex, endIndex) &&
 	  @			 validateDistance(board, isP1Turn, startIndex, endIndex);
 	  @ ensures \result == true;
 	  @*/
-	public static boolean isValidMove(Board board, boolean isP1Turn,
+	public /*@ pure */ static boolean isValidMove(Board board, boolean isP1Turn,
 			int startIndex, int endIndex, int skipIndex) {
 		
 		// Basic checks
@@ -104,45 +104,47 @@ public class MoveLogic {
 	 * @param endIndex		the end index of the move.
 	 * @return true if and only if all IDs are valid.
 	 */
-	/*@
-	  @ requires board.get(endIndex) != Board.EMPTY ||
-	  @			(isP1Turn && board.get(startIndex) != Board.BLACK_CHECKER && board.get(startIndex) != Board.BLACK_KING) ||
-	  @			(!isP1Turn && board.get(startIndex) != Board.WHITE_CHECKER && board.get(startIndex) != Board.WHITE_KING) || 
-	  @			board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID && 
-	  @				(
-	  @					(
-	  @						!isP1Turn && 
-	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER && 
-	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING
-	  @					) 
-	  @					||
-	  @					(
-	  @						isP1Turn && 
-	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_CHECKER && 
-	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_KING
-	  @					)
-	  @				);
-	  @ ensures \result == false;
-	  @ also
-	  @ requires board.get(endIndex) == Board.EMPTY &&
-	  @			(!isP1Turn && board.get(startIndex) == Board.BLACK_CHECKER && board.get(startIndex) == Board.BLACK_KING) &&
-	  @			(isP1Turn && board.get(startIndex) == Board.WHITE_CHECKER && board.get(startIndex) == Board.WHITE_KING) && 
-	  @			board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.INVALID && 
-	  @			(
-	  @				(
-	  @					isP1Turn &&
-	  @					(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_CHECKER || 
-	  @					board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_KING)
-	  @				) 
-	  @				||
-	  @				(
-	  @					!isP1Turn && 
-	  @					(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.WHITE_CHECKER ||
-	  @					board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.WHITE_KING)
-	  @				)
-	  @			);
-	  @ ensures \result == true;
-	  @*/
+//	/*@
+//	  @ requires board.get(endIndex) != Board.EMPTY ||
+//	  @			(isP1Turn && board.get(startIndex) != Board.BLACK_CHECKER && board.get(startIndex) != Board.BLACK_KING) ||
+//	  @			(!isP1Turn && board.get(startIndex) != Board.WHITE_CHECKER && board.get(startIndex) != Board.WHITE_KING) || 
+//	  @			(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID && 
+//	  @				(
+//	  @					(
+//	  @						!isP1Turn && 
+//	  @						(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER && 
+//	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING)
+//	  @					) 
+//	  @					||
+//	  @					(
+//	  @						isP1Turn && 
+//	  @						(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_CHECKER && 
+//	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_KING)
+//	  @					)
+//	  @				)
+//	  @			);
+//	  @ ensures \result == false;
+//	  @ also
+//	  @ requires board.get(endIndex) == Board.EMPTY &&
+//	  @			!(!isP1Turn && board.get(startIndex) != Board.BLACK_CHECKER && board.get(startIndex) != Board.BLACK_KING) &&
+//	  @			!(isP1Turn && board.get(startIndex) != Board.WHITE_CHECKER && board.get(startIndex) != Board.WHITE_KING) && 
+//	  @			!(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID && 
+//	  @				(
+//	  @					(
+//	  @						!isP1Turn &&
+//	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER && 
+//	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING
+//	  @					) 
+//	  @					||
+//	  @					(
+//	  @						isP1Turn && 
+//	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_CHECKER &&
+//	  @						board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.WHITE_KING
+//	  @					)
+//	  @				)
+//	  @			);
+//	  @ ensures \result == true;
+//	  @*/
 	private /*@ spec_public pure */ static boolean validateIDs(Board board, boolean isP1Turn,
 			int startIndex, int endIndex) {
 		
@@ -154,18 +156,18 @@ public class MoveLogic {
 		// Check if proper ID
 		int id = board.get(startIndex);
 		if ((isP1Turn && id != Board.BLACK_CHECKER && id != Board.BLACK_KING)
-				|| (!isP1Turn && id != Board.WHITE_CHECKER
-				&& id != Board.WHITE_KING)) {
+				|| 
+			(!isP1Turn && id != Board.WHITE_CHECKER && id != Board.WHITE_KING)) {
 			return false;
 		}
 		
 		// Check the middle
 		Point middle = Board.middle(startIndex, endIndex);
 		int midID = board.get(Board.toIndex(middle));
-		if (midID != Board.INVALID && ((!isP1Turn &&
-				midID != Board.BLACK_CHECKER && midID != Board.BLACK_KING) ||
-				(isP1Turn && midID != Board.WHITE_CHECKER &&
-				midID != Board.WHITE_KING))) {
+		if (midID != Board.INVALID && 
+				((!isP1Turn && midID != Board.BLACK_CHECKER && midID != Board.BLACK_KING) ||
+				(isP1Turn && midID != Board.WHITE_CHECKER && midID != Board.WHITE_KING))
+			) {
 			return false;
 		}
 		

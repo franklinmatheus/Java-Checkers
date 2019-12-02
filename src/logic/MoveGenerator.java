@@ -40,14 +40,11 @@ public class MoveGenerator {
 	 * represents a move available.
 	 * @see {@link #getMoves(Board, Point)}
 	 */
-//	/*@
-//	  @ requires board == null || !Board.isValidIndex(startIndex);
-//	  @ assignable \nothing;
-//	  @ ensures (\forall int i; i >= 0 && i <= \result.size(); \result.get(i) instanceof Point);
-//	  @ also
-//	  @ requires board != null || Board.isValidIndex(startIndex);
-//	  @
-//	  @*/
+	/*@
+	  @ requires board == null || !Board.isValidIndex(startIndex);
+	  @ also
+	  @ requires board != null || Board.isValidIndex(startIndex);
+	  @*/
 	public /*@ pure */ static List<Point> getMoves(Board board, int startIndex) {
 		
 		// Trivial cases
@@ -129,33 +126,33 @@ public class MoveGenerator {
 	 * @param endIndex		the end index of the skip.
 	 * @return true if and only if the skip can be performed.
 	 */
-	/*@
-	  @ requires board == null ||
-	  @			 board.get(endIndex) != Board.EMPTY ||
-	  @			 board.get(startIndex) == Board.INVALID || 
-	  @			 board.get(startIndex) == Board.EMPTY ||
-	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.INVALID || 
-	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.EMPTY ||
-	  @			 (
-	  @				(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_CHECKER || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_KING)
-	  @			 	^ 
-	  @			 	(board.get(startIndex) == Board.WHITE_CHECKER || board.get(startIndex) == Board.WHITE_KING)
-	  @			 );
-	  @ ensures \result == false;
-	  @ also
-	  @ requires board != null &&
-	  @			 board.get(endIndex) == Board.EMPTY &&
-	  @			 board.get(startIndex) != Board.INVALID &&
-	  @			 board.get(startIndex) != Board.EMPTY &&
-	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID &&
-	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.EMPTY &&
-	  @			 (
-	  @				(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING)
-	  @			 	^ 
-	  @				(board.get(startIndex) != Board.WHITE_CHECKER || board.get(startIndex) != Board.WHITE_KING)
-	  @			 );
-	  @ ensures \result == true;
-	  @*/
+//	/*@
+//	  @ requires board == null ||
+//	  @			 board.get(endIndex) != Board.EMPTY ||
+//	  @			 board.get(startIndex) == Board.INVALID || 
+//	  @			 board.get(startIndex) == Board.EMPTY ||
+//	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.INVALID || 
+//	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.EMPTY ||
+//	  @			 (
+//	  @				(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_CHECKER || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) == Board.BLACK_KING)
+//	  @			 	^ 
+//	  @			 	(board.get(startIndex) == Board.WHITE_CHECKER || board.get(startIndex) == Board.WHITE_KING)
+//	  @			 );
+//	  @ ensures \result == false;
+//	  @ also
+//	  @ requires board != null &&
+//	  @			 board.get(endIndex) == Board.EMPTY &&
+//	  @			 board.get(startIndex) != Board.INVALID &&
+//	  @			 board.get(startIndex) != Board.EMPTY &&
+//	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.INVALID &&
+//	  @			 board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.EMPTY &&
+//	  @			 (
+//	  @				(board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_CHECKER || board.get(Board.toIndex(Board.middle(startIndex, endIndex))) != Board.BLACK_KING)
+//	  @			 	^ 
+//	  @				(board.get(startIndex) != Board.WHITE_CHECKER || board.get(startIndex) != Board.WHITE_KING)
+//	  @			 );
+//	  @ ensures \result == true;
+//	  @*/
 	public static boolean isValidSkip(Board board,
 			int startIndex, int endIndex) {
 		
@@ -193,12 +190,16 @@ public class MoveGenerator {
 	 */
 	/*@
 	  @ requires (id == Board.BLACK_KING || id == Board.WHITE_KING) || id == Board.BLACK_CHECKER;
-	  @ assignable \nothing;
+	  @ assignable points;
 	  @ ensures points.size() != \old(points.size());
 	  @ also
 	  @ requires (id == Board.BLACK_KING || id == Board.WHITE_KING) || id == Board.WHITE_CHECKER;
-	  @ assignable \nothing;
+	  @ assignable points;
 	  @ ensures points.size() != \old(points.size());
+	  @ also
+	  @ requires id == Board.EMPTY;
+	  @ assignable \nothing;
+	  @ ensures points.size() == \old(points.size());
 	  @*/
 	public static void addPoints(List<Point> points, Point p, int id, int delta) {
 		
